@@ -36,7 +36,7 @@ enum EventPersistenceService {
         )
 
         return base
-            .appendingPathComponent("z0d1akReports", isDirectory: true)
+            .appendingPathComponent("z0d1ak", isDirectory: true)
             .appendingPathComponent("events.json")
     }
 
@@ -55,6 +55,7 @@ enum EventPersistenceService {
         )
 
         return [
+            base.appendingPathComponent("z0d1ak", isDirectory: true).appendingPathComponent("events.json"),
             base.appendingPathComponent("z0d1akReports", isDirectory: true).appendingPathComponent("events.json"),
             base.appendingPathComponent("Z0d1akReports", isDirectory: true).appendingPathComponent("events.json"),
         ]

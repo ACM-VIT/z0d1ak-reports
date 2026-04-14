@@ -11,8 +11,10 @@ struct SidebarView: View {
     var body: some View {
         List(selection: $store.selectedEventID) {
             Section {
-                Label("Dashboard", systemImage: "square.grid.2x2")
-                    .tag(EventStore.dashboardSelectionID as String?)
+                ForEach(SidebarShortcut.allCases) { shortcut in
+                    ShortcutRow(shortcut: shortcut)
+                        .tag(shortcut.id as String?)
+                }
             }
 
             ForEach(sections) { section in
@@ -22,12 +24,70 @@ struct SidebarView: View {
                             .tag(event.id as String?)
                     }
                 } header: {
-                    Text(section.title)
+                    HStack(spacing: 6) {
+                        Text(section.title)
+                        Text("\(section.events.count)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.tertiary)
+                    }
                 }
+            }
+
+            if sections.isEmpty {
+                emptyState
             }
         }
         .listStyle(.sidebar)
         .navigationTitle("z0d1ak")
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        let trimmed = store.searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        Section {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(trimmed.isEmpty ? "No events yet" : "No matches")
+                    .font(.callout.weight(.medium))
+                Text(trimmed.isEmpty
+                     ? "Refresh to pull from CTFTime."
+                     : "Try a different search term.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 6)
+        }
+    }
+}
+
+@MainActor
+private enum SidebarShortcut: String, CaseIterable, Identifiable {
+    case dashboard
+
+    nonisolated var id: String {
+        switch self {
+        case .dashboard: "com.z0d1ak.dashboard"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .dashboard: "Dashboard"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .dashboard: "square.grid.2x2"
+        }
+    }
+}
+
+private struct ShortcutRow: View {
+    let shortcut: SidebarShortcut
+
+    var body: some View {
+        Label(shortcut.title, systemImage: shortcut.systemImage)
+            .labelStyle(.titleAndIcon)
     }
 }
 

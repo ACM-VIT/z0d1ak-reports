@@ -3,11 +3,11 @@ import SwiftUI
 import z0d1akReportsCore
 
 @main
-struct z0d1akReportsApp: App {
+struct z0d1akApp: App {
     @State private var store = EventStore()
 
     var body: some Scene {
-        WindowGroup("z0d1ak Reports", id: "main") {
+        WindowGroup("z0d1ak", id: "main") {
             ContentView(store: store)
                 .frame(minWidth: 1040, minHeight: 680)
         }
@@ -19,6 +19,15 @@ struct z0d1akReportsApp: App {
                     store.presentAddEventSheet()
                 }
                 .keyboardShortcut("n", modifiers: [.command, .shift])
+            }
+
+            CommandGroup(before: .sidebar) {
+                Button("Go to Dashboard") {
+                    store.showDashboard()
+                }
+                .keyboardShortcut("0", modifiers: .command)
+
+                Divider()
             }
 
             CommandGroup(after: .pasteboard) {

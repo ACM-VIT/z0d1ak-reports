@@ -46,6 +46,10 @@ public final class EventStore {
         showingAddSheet = true
     }
 
+    public func showDashboard() {
+        selectedEventID = Self.dashboardSelectionID
+    }
+
     public func copyCurrentDraft() {
         guard let event = selectedEvent else { return }
         ClipboardService.copy(
