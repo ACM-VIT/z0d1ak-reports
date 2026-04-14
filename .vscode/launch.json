@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Debug Z0d1akReports",
+            "target": "Z0d1akReports",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Z0d1akReports"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Release Z0d1akReports",
+            "target": "Z0d1akReports",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Z0d1akReports"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Debug z0d1akReports",
+            "target": "z0d1akReports",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug z0d1akReports"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Release z0d1akReports",
+            "target": "z0d1akReports",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release z0d1akReports"
+        }
+    ]
+}
