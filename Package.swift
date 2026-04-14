@@ -8,8 +8,8 @@ let package = Package(
     ],
     products: [
         .executable(
-            name: "z0d1akReports",
-            targets: ["z0d1akReports"]
+            name: "z0d1ak",
+            targets: ["z0d1ak"]
         ),
     ],
     targets: [
@@ -17,8 +17,9 @@ let package = Package(
             name: "z0d1akReportsCore"
         ),
         .executableTarget(
-            name: "z0d1akReports",
-            dependencies: ["z0d1akReportsCore"]
+            name: "z0d1ak",
+            dependencies: ["z0d1akReportsCore"],
+            path: "Sources/z0d1akReports"
         ),
         .testTarget(
             name: "z0d1akReportsTests",

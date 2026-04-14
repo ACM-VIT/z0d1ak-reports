@@ -39,6 +39,26 @@
             "target": "z0d1akReports",
             "configuration": "release",
             "preLaunchTask": "swift: Build Release z0d1akReports"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Debug z0d1ak",
+            "target": "z0d1ak",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug z0d1ak"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:z0d1ak-reports}",
+            "name": "Release z0d1ak",
+            "target": "z0d1ak",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release z0d1ak"
         }
     ]
 }
