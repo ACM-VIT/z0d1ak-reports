@@ -92,6 +92,9 @@ struct EventDetailView: View {
                 TextField("Website", text: store.binding(for: event.id, \.website))
                 TextField("Format", text: store.binding(for: event.id, \.format))
                 TextField("Restrictions", text: store.binding(for: event.id, \.restrictions))
+                TextField("Registration Fee", text: store.optionalStringBinding(for: event.id, \.registrationFee))
+                TextField("Team Size Limit", text: store.optionalIntTextBinding(for: event.id, \.teamSizeLimit))
+                TextField("Prize Summary", text: store.optionalStringBinding(for: event.id, \.prizeSummary), axis: .vertical)
                 TextField("Location", text: store.binding(for: event.id, \.location))
                 if !event.ctftimeURL.isEmpty {
                     LabeledContent("CTFTime") {
@@ -121,7 +124,8 @@ struct EventDetailView: View {
                 if let rating = event.teamResult?.ratingPoints {
                     LabeledContent("Rating", value: String(format: "%.3f", rating))
                 }
-                LabeledContent("Participants", value: event.participatingTeams.map(String.init) ?? "—")
+                TextField("Total Teams", text: store.optionalIntTextBinding(for: event.id, \.participatingTeams))
+                TextField("Total Players", text: store.optionalIntTextBinding(for: event.id, \.totalPlayers))
                 LabeledContent("Mode", value: event.onsite == true ? "On-site" : "Online")
                 LabeledContent("CTFd", value: event.usesCTFd.map { $0 ? "Yes" : "No" } ?? "—")
             }

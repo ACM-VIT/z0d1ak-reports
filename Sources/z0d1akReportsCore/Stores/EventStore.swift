@@ -252,6 +252,32 @@ public final class EventStore {
         )
     }
 
+    func optionalStringBinding(for eventID: String, _ keyPath: WritableKeyPath<CTFEvent, String?>) -> Binding<String> {
+        Binding(
+            get: {
+                self.requiredEvent(for: eventID)[keyPath: keyPath] ?? ""
+            },
+            set: { newValue in
+                let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                self.updateEvent(eventID) { $0[keyPath: keyPath] = trimmed.isEmpty ? nil : trimmed }
+            }
+        )
+    }
+
+    func optionalIntTextBinding(for eventID: String, _ keyPath: WritableKeyPath<CTFEvent, Int?>) -> Binding<String> {
+        Binding(
+            get: {
+                self.requiredEvent(for: eventID)[keyPath: keyPath].map(String.init) ?? ""
+            },
+            set: { newValue in
+                let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                self.updateEvent(eventID) { event in
+                    event[keyPath: keyPath] = Int(trimmed)
+                }
+            }
+        )
+    }
+
     func attachmentStatusBinding(for eventID: String, kind: AttachmentKind) -> Binding<AttachmentStatus> {
         Binding(
             get: {
@@ -307,6 +333,10 @@ public final class EventStore {
             event.description,
             event.notes,
             event.domains.joined(separator: " "),
+            event.registrationFee ?? "",
+            event.prizeSummary ?? "",
+            event.totalPlayers.map(String.init) ?? "",
+            event.teamSizeLimit.map(String.init) ?? "",
             event.teamMembers.map(\.displayLine).joined(separator: " "),
         ].joined(separator: " ").lowercased()
 

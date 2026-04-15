@@ -246,6 +246,10 @@ struct CTFEvent: Codable, Identifiable, Hashable, Sendable {
     var repoPath: String?
     var usesCTFd: Bool?
     var domains: [String]
+    var registrationFee: String? = nil
+    var prizeSummary: String? = nil
+    var totalPlayers: Int? = nil
+    var teamSizeLimit: Int? = nil
     var teamMembers: [TeamMember]
     var teamResult: TeamResult?
     var permissionState: PermissionState
@@ -376,6 +380,10 @@ extension CTFEvent {
         if repoPath == nil { repoPath = imported.repoPath }
         if usesCTFd == nil { usesCTFd = imported.usesCTFd }
         if domains.isEmpty { domains = imported.domains }
+        if (registrationFee ?? "").isEmpty { registrationFee = imported.registrationFee }
+        if (prizeSummary ?? "").isEmpty { prizeSummary = imported.prizeSummary }
+        if totalPlayers == nil { totalPlayers = imported.totalPlayers }
+        if teamSizeLimit == nil { teamSizeLimit = imported.teamSizeLimit }
         if teamMembers.isEmpty { teamMembers = imported.teamMembers }
         if teamResult == nil { teamResult = imported.teamResult }
         lastSyncedAt = imported.lastSyncedAt ?? .now

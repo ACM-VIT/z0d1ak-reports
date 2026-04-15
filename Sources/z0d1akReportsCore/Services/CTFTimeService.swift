@@ -412,6 +412,10 @@ enum CTFTimeService {
             repoPath: nil,
             usesCTFd: nil,
             domains: extractDomains(from: description),
+            registrationFee: extractRegistrationFee(from: description),
+            prizeSummary: prizeText.isEmpty ? nil : prizeText,
+            totalPlayers: nil,
+            teamSizeLimit: extractTeamSizeLimit(from: description + "\n" + (response.restrictions ?? "")),
             teamMembers: [],
             teamResult: nil,
             permissionState: .unknown,
@@ -428,6 +432,42 @@ enum CTFTimeService {
 
     private static func extractDiscordLink(from text: String) -> String {
         matches(for: #"https:\/\/discord\.gg\/[^\s<>"')]+"#, in: text).first?.first ?? ""
+    }
+
+    private static func extractRegistrationFee(from text: String) -> String? {
+        let lines = text
+            .split(whereSeparator: \.isNewline)
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        if let feeLine = lines.first(where: {
+            $0.localizedCaseInsensitiveContains("registration fee") || $0.localizedCaseInsensitiveContains("entry fee")
+        }) {
+            if let amount = matches(for: #"((?:₹|Rs\.?|INR)\s?[0-9,]+|Free)"#, in: feeLine).first?.last, !amount.isEmpty {
+                return amount
+            }
+            if let value = feeLine.split(separator: ":", maxSplits: 1).last?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty, value != feeLine {
+                return value
+            }
+        }
+
+        return nil
+    }
+
+    private static func extractTeamSizeLimit(from text: String) -> Int? {
+        let patterns = [
+            #"team size[^0-9]{0,20}(\d+)"#,
+            #"maximum[^0-9]{0,20}(\d+)\s+(?:members?|players?|people)"#,
+            #"max(?:imum)?[^0-9]{0,20}(\d+)\s+(?:members?|players?|people)"#,
+        ]
+
+        for pattern in patterns {
+            if let capture = matches(for: pattern, in: text).first?.dropFirst().first,
+               let value = Int(capture) {
+                return value
+            }
+        }
+
+        return nil
     }
 
     private static func matches(for pattern: String, in text: String) -> [[String]] {

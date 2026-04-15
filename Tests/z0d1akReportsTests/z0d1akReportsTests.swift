@@ -81,6 +81,10 @@ import Testing
         repoPath: nil,
         usesCTFd: nil,
         domains: ["Web", "Cryptography", "OSINT"],
+        registrationFee: "₹200",
+        prizeSummary: "Cybersecurity certifications for top 3 teams and participation certificates for all",
+        totalPlayers: nil,
+        teamSizeLimit: 5,
         teamMembers: [
             TeamMember(name: "Ishaan Samdani", registrationNumber: "23BME0453"),
             TeamMember(name: "Aditya Vardhan Kochar", registrationNumber: "24BCE3000"),
@@ -95,7 +99,11 @@ import Testing
 
     let draft = DraftComposer.content(for: .permissionRequest, event: event)
 
-    #expect(draft.contains("INCOGNITO 7.0"))
+    #expect(draft.contains("a 24-hour Capture The Flag (CTF) cybersecurity competition"))
+    #expect(draft.contains("Format: Jeopardy-style CTF"))
+    #expect(draft.contains("Registration Fee: ₹200"))
+    #expect(draft.contains("Team Size: Maximum 5 members"))
+    #expect(draft.contains("Prizes: Cybersecurity certifications for top 3 teams and participation certificates for all"))
     #expect(draft.contains("Ishaan Samdani [23BME0453]"))
     #expect(draft.contains("Event Link: https://incognito.axiosiiitl.dev"))
 }
@@ -135,7 +143,7 @@ import Testing
     #expect(event.eventBucket == .history)
 }
 
-@Test func reportMailIncludesEventReportBody() async throws {
+@Test func achievementReportMailMatchesExpectedStructure() async throws {
     let startDate = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 10, hour: 9, minute: 0))
     let endDate = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 12, hour: 18, minute: 0))
     let event = CTFEvent(
@@ -160,6 +168,10 @@ import Testing
         repoPath: nil,
         usesCTFd: nil,
         domains: [],
+        registrationFee: nil,
+        prizeSummary: "worth 72k INR to 1.2L INR",
+        totalPlayers: 1091,
+        teamSizeLimit: nil,
         teamMembers: [
             TeamMember(name: "Ishaan Samdani", registrationNumber: "23BME0453"),
             TeamMember(name: "Divyam Agarwal", registrationNumber: "24BIT0423"),
@@ -168,19 +180,85 @@ import Testing
         permissionState: .approved,
         reportState: .drafting,
         attachments: CTFEvent.defaultAttachments(),
+        notes: """
+        Mail Intro: Here is the event report for the international CTF, KAALCHAKRA26 CTF Finals.
+
+        Prizes Won: ACP, CASA, APU
+        The XSSRat 020 Bundle
+
+        Certificates: Not yet released
+
+        Scoreboard: https://ctftime.org/event/3197
+        image.png
+        """,
+        lastSyncedAt: nil
+    )
+
+    let subject = DraftComposer.subject(for: .reportMail, event: event)
+    let draft = DraftComposer.content(for: .reportMail, event: event)
+
+    #expect(subject == "Achievement - ACM (z0d1ak) - 4th position")
+    #expect(draft.contains("Chapter Name: Association for Computing Machinery"))
+    #expect(draft.contains("Team Name: z0d1ak"))
+    #expect(draft.contains("Event Name: KAALCHAKRA26 CTF Finals"))
+    #expect(draft.contains("Position secured: 4th"))
+    #expect(draft.contains("Total Players: 1091"))
+    #expect(draft.contains("Prizes won"))
+    #expect(draft.contains("ACP, CASA, APU"))
+    #expect(draft.contains("Certificates:\n\nNot yet released"))
+    #expect(draft.contains("https://ctftime.org/event/3197"))
+    #expect(draft.contains("Ishaan Samdani [23BME0453]"))
+}
+
+@Test func participationReportMailUsesAttachmentCoverFormat() async throws {
+    let startDate = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 3, hour: 21, minute: 0))
+    let endDate = Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 5, hour: 21, minute: 0))
+    let event = CTFEvent(
+        id: "manual-participation",
+        origin: .manual,
+        title: "Some CTF 2026",
+        organizer: "Example Org",
+        website: "",
+        format: "Jeopardy-style CTF",
+        restrictions: "",
+        location: "Online",
+        description: "An event.",
+        startDate: startDate,
+        endDate: endDate,
+        participatingTeams: 521,
+        weight: nil,
+        onsite: false,
+        discordURL: "",
+        liveFeedURL: "",
+        ctftimeURL: "",
+        ctftimeEventID: nil,
+        repoPath: nil,
+        usesCTFd: nil,
+        domains: [],
+        registrationFee: nil,
+        prizeSummary: nil,
+        totalPlayers: nil,
+        teamSizeLimit: nil,
+        teamMembers: [
+            TeamMember(name: "Ishaan Samdani", registrationNumber: "23BME0453"),
+        ],
+        teamResult: nil,
+        permissionState: .approved,
+        reportState: .drafting,
+        attachments: CTFEvent.defaultAttachments(),
         notes: "",
         lastSyncedAt: nil
     )
 
+    let subject = DraftComposer.subject(for: .reportMail, event: event)
     let draft = DraftComposer.content(for: .reportMail, event: event)
 
-    #expect(draft.contains("Chapter Name: Association for Computing Machinery"))
-    #expect(draft.contains("Team Name: z0d1ak"))
-    #expect(draft.contains("Event Name: KAALCHAKRA26 CTF Finals"))
-    #expect(draft.contains("Position secured: 4 Place"))
-    #expect(draft.contains("Certificates:"))
-    #expect(draft.contains("Scoreboard:"))
-    #expect(draft.contains("Ishaan Samdani (23BME0453)"))
+    #expect(subject.contains("Event Report- Some CTF 2026- ACM/z0d1ak"))
+    #expect(draft.contains("PFA report of our participation in Some CTF 2026"))
+    #expect(draft.contains("Positions secured: Participation"))
+    #expect(draft.contains("Attachments:"))
+    #expect(draft.contains("1. Event report (Some CTF 2026"))
+    #expect(draft.contains("2. Certificates (Participation/Achievement if any)"))
 }
 
 @Test func importedDescriptionReplacesTeamHistoryPlaceholder() async throws {

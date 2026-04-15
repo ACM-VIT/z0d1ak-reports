@@ -1,6 +1,8 @@
 import Foundation
 
 enum DateFormatting {
+    private static let indianTimeZone = TimeZone(identifier: "Asia/Kolkata") ?? .current
+
     static func shortDate(_ date: Date) -> String {
         date.formatted(.dateTime.day().month(.abbreviated).year())
     }
@@ -18,9 +20,12 @@ enum DateFormatting {
     }
 
     static func permissionDateRange(start: Date, end: Date) -> String {
-        let startString = start.formatted(.dateTime.day().month(.wide).year().hour().minute())
-        let endString = end.formatted(.dateTime.day().month(.wide).year().hour().minute())
-        return "\(startString) – \(endString)"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_IN")
+        formatter.timeZone = indianTimeZone
+        formatter.dateFormat = "EEE, d MMMM yyyy, HH:mm zzz"
+
+        return "\(formatter.string(from: start)) — \(formatter.string(from: end))"
     }
 
     static func relativeDeadline(_ date: Date) -> String {
@@ -51,15 +56,14 @@ enum DateFormatting {
         return "\(startString) to \(endString)"
     }
 
-    private static func ordinalDay(_ date: Date) -> String {
-        let day = Calendar.current.component(.day, from: date)
+    static func ordinal(_ number: Int) -> String {
         let suffix: String
 
-        switch day % 100 {
+        switch number % 100 {
         case 11, 12, 13:
             suffix = "th"
         default:
-            switch day % 10 {
+            switch number % 10 {
             case 1: suffix = "st"
             case 2: suffix = "nd"
             case 3: suffix = "rd"
@@ -67,6 +71,11 @@ enum DateFormatting {
             }
         }
 
-        return "\(day)\(suffix)"
+        return "\(number)\(suffix)"
+    }
+
+    private static func ordinalDay(_ date: Date) -> String {
+        let day = Calendar.current.component(.day, from: date)
+        return ordinal(day)
     }
 }
