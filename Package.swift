@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "z0d1akReports",
     platforms: [
-        .macOS(.v26),
+        .macOS(.v15),
     ],
     products: [
         .executable(
