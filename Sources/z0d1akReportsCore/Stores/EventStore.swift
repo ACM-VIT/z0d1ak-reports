@@ -327,20 +327,28 @@ public final class EventStore {
         let needle = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !needle.isEmpty else { return true }
 
-        let haystack = [
+        let searchableParts = searchableTextParts(for: event)
+        let haystack = searchableParts.joined(separator: " ").lowercased()
+
+        return haystack.contains(needle)
+    }
+
+    private func searchableTextParts(for event: CTFEvent) -> [String] {
+        let teamMembers = event.teamMembers.map(\.displayLine).joined(separator: " ")
+        let domains = event.domains.joined(separator: " ")
+
+        return [
             event.title,
             event.organizer,
             event.description,
             event.notes,
-            event.domains.joined(separator: " "),
+            domains,
             event.registrationFee ?? "",
             event.prizeSummary ?? "",
             event.totalPlayers.map(String.init) ?? "",
             event.teamSizeLimit.map(String.init) ?? "",
-            event.teamMembers.map(\.displayLine).joined(separator: " "),
-        ].joined(separator: " ").lowercased()
-
-        return haystack.contains(needle)
+            teamMembers,
+        ]
     }
 
     private func event(for eventID: String) -> CTFEvent? {
